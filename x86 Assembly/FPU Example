@@ -1,0 +1,90 @@
+INCLUDE Irvine32.inc
+
+
+.data
+
+prompt	BYTE	"Enter the radius: ", 0
+
+msg1		BYTE	"The perimeter of a circle is ", 0
+msg2		BYTE 	"The area of a circle is ", 0
+msg3		BYTE 	"The volume of a sphere is ", 0
+msg4		BYTE 	"The surface area of a sphere is ", 0
+
+radius 		REAL4	?
+perim  		REAL4	?
+area   		REAL4   ?
+volSphere	REAL4	?
+areaSphere	REAL4	?
+
+two		DWORD 	2
+temp	DWORD	?
+
+.code
+main PROC
+	FINIT				;Initialize the FPU stack settings
+
+	mov edx, OFFSET prompt		;Ask for the radius
+	call WriteString
+	call ReadFloat			;Collect the radius
+	fst radius
+
+	;FLD ST(0)			;Add copy of current top of stack
+	;FSQRT				;Perform squareroot on top of stack	
+	;call showFPUstack		;show the FPU
+	;call showFPUstack
+
+	FLDPI				;calc perimeter/circumference of a circle/sphere
+	FIMUL two			; 2 * PI * R
+	FMUL				; FMULP ST(1), ST(0)  --> ST(0)= 2*Pi, ST(1) = R
+	MOV edx, OFFSET msg1		;print message 
+	call WriteString
+	call WriteFloat			;print top of stack (the answer)
+	call CrLf
+	FSTP perim			;stores the answer and removes from stack
+
+	FLD	radius			;calculate area = PI * r^2
+	FLDPI
+	FLDPI
+	FMUL
+	FMUL
+	MOV edx, OFFSET msg2		;print message and answer
+	call WriteString
+	call WriteFloat
+	call CrLf
+	FSTP area			;store the answer and remove from stack
+	
+	FILD	two			;calculate volume of a sphere = 4/3 * PI * r ^3
+	FILD	two
+	FMUL	
+	MOV temp, 3			;move a number to temp
+	FIDIV	temp			;uses integer variable temp for division
+	FLDPI
+	FMUL
+	FLD radius
+	FMUL radius
+	FMUL radius
+	FMUL
+	MOV edx, OFFSET msg3		;print message and answer
+	call WriteString
+	call WriteFloat
+	call CrLf
+	FSTP volSphere			;store the answer and remove from stack
+	
+	MOV temp, 4			;calculate area of sphere = 4 * PI * r^2
+	FILD temp			;loads integer value in temp into the stack
+	FLDPI
+	FLD radius
+	FMUL radius
+	FMUL
+	FMUL
+	MOV edx, OFFSET msg4		;print the message and the answer
+	call WriteString
+	call WriteFloat
+	call CrLf
+	FSTP areaSphere			;store the answer and remove from stack
+
+	call showFPUStack		;show what is in the stack (should be empty)	
+	
+	exit
+main ENDP
+END main

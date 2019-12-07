@@ -1,0 +1,8 @@
+Random Number in Assembly
+mov eax, high
+sub eax, low
+inc eax
+call RandomRange
+add eax, low
+
+java ---> x = (int)(Math.random() * (high-low+1)) + low

@@ -1,0 +1,47 @@
+INCLUDE Irvine32.inc
+
+.data
+array WORD 3 DUP(9999h)
+
+.code 
+main PROC
+	; Shift by two bits
+	mov esi, 0
+	shr array[esi + 4]
+	rcr array[esi + 2]
+	rcr array[esi]
+
+	exit
+main ENDP
+END main
+
+
+Solve Multiplication With Shifts:
+= EAX * 36
+= EAX * (32 + 4)
+= (EAX * 32) + (EAX + 4)
+
+mov ebx, eax
+shl eax, 5 				;(2 to the power of 5 = 32)
+shl ebx, 2 				; ebx + 4 (2 to the power of 4 = 4)
+add eax, ebx			; eax = ebx * 36
+
+
+26? 
+= 16 + 8 + 2
+
+mov ax, 2				
+mov dx, ax				; dx = ax * 16
+
+shl dx, 4				; ax * s
+shl ax, 1
+
+add dx, ax				
+shl ax, 2				
+
+add ax, dx
+
+
+
+
+
